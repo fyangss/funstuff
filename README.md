@@ -1,2 +1,2 @@
 # funstuff
-Fun throwaway stuff I don't want to have to search multiple minutes for.
+Random stuff I'm afraid I'll forget the google keywords for to find again in the future.
