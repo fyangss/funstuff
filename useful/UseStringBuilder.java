@@ -1,5 +1,3 @@
-package org.test;
-
 /**
  * Someone asked why.
  */
@@ -13,7 +11,7 @@ public class UseStringBuilder {
         for (int i = 0; i < numLoops; ++i) {
             str += "0";
         }
-        System.out.printf(System.currentTimeMillis() - startTime);
+        System.out.println(System.currentTimeMillis() - startTime);
 
         startTime = System.currentTimeMillis();
         // buffer for sync, again, doesn't matter here (well, *not* using it matters here)
@@ -21,6 +19,6 @@ public class UseStringBuilder {
         for (int i = 0; i < numLoops; ++i) {
             strBuilder.append("0");
         }
-        System.out.printf(System.currentTimeMillis() - startTime);
+        System.out.println(System.currentTimeMillis() - startTime);
     }
 }
