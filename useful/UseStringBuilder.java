@@ -1,9 +1,9 @@
-level28ckage org.test;
+package org.test;
 
 /**
  * Someone asked why.
  */
-public class App {
+public class UseStringBuilder {
     public static void main(String[] args) {
         int numLoops = 100000;
 
