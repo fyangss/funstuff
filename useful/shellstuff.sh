@@ -10,7 +10,7 @@ rm -rf !(*.zip)
 #'messy' way without extglob
 find ~/foo/ -type f -not -name '*.zip' -delete
 
-#regex sub for specific file type in a directory
+#regex sub for specific file type in a directory and change directory name
 for i in $(\ls -d *.zip)
 do
     mv $i $(echo $i | sed 's/(.*)/\1/')
@@ -21,3 +21,6 @@ done
 
 #wget and save all dependencies
 wget -r -l3 -k -p http://www.example.com
+
+#change specific pattern in all files in a directory
+find /path/to/dir -type f | grep 'pattern' | while read file; do sed -i 's/pattern_in_file/replacement/g' $file; done
