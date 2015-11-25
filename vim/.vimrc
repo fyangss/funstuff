@@ -1,5 +1,3 @@
-" Makes it work in windows
-
 " Custom
 set directory=.,$TEMP                   " Gets rid of first error
 set number                              " Delicious numbers
@@ -38,14 +36,4 @@ map k gk
 if version >= 700
     set spl=en spell
     set nospell
-endif
-
-" Sexy line number in colorscheme
-if has("gui_running")
-    colorscheme level28
-    set guifont=Consolas
-    hi CursorLine term=none cterm=none ctermbg=3
-else
-    colorscheme darkblue
-    hi CursorLine term=none cterm=none ctermbg=0
 endif
