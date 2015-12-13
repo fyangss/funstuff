@@ -1,0 +1,4 @@
+// Disable windows defender in windows 10 home edition
+// Use .reg file or directly edit
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender]
+"DisableAntiSpyware"=dword:00000001
