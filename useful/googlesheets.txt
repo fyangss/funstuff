@@ -1,0 +1,8 @@
+// alternate row colors
+=ISEVEN(Row())
+
+// highlight row containing date in column A
+=$A:$A=TODAY()
+
+// full sheet range
+1:1000
