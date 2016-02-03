@@ -24,3 +24,7 @@ wget -r -l3 -k -p http://www.example.com
 
 #change specific pattern in all files in a directory
 find /path/to/dir -type f | grep 'pattern' | while read file; do sed -i 's/pattern_in_file/replacement/g' $file; done
+
+#downloading java from oracle with appropraite license cookie
+wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u71-b15/jdk-8u71-linux-x64.rpm
+
