@@ -30,3 +30,5 @@ wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-
 
 #git log with tree and stuff
 git log --graph --decorate --all --pretty=short
+#two line
+git log --graph --format='format:%C(yellow)%h%C(reset) %C(blue)"%an" <%ae>%C(reset) %C(magenta)%cr%C(reset)%C(auto)%d%C(reset)%n%s' --date-order
