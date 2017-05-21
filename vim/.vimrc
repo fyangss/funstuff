@@ -155,7 +155,7 @@ endif
 " Vim UI{
 
   " Colorscheme {
-    color github
+    color mustang
   " }
 
   set tabpagemax=15               " Only show 15 tabs
@@ -191,6 +191,9 @@ endif
   set backspace=indent,eol,start  " Backspace for dummies
   set linespace=0                 " No extra spaces between rows
   set number                      " Line numbers on
+  set wrap                        " Turn on text wrapping
+  set lines=45                    " Nice height for 1920x1080
+  set columns=140                 " Nice amount of width for 1920x1080
   set showmatch                   " Show matching brackets/parenthesis
   set incsearch                   " Find as you type search
   set hlsearch                    " Highlight search terms
