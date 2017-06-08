@@ -59,7 +59,7 @@ endif
 " }
 
 " General {
-  set background=light           " background triggering logic based off light background
+  set background=dark           " background triggering logic based off light background
 
   " background triggering
   function! ToggleBG()
@@ -191,7 +191,6 @@ endif
   set backspace=indent,eol,start  " Backspace for dummies
   set linespace=0                 " No extra spaces between rows
   set number                      " Line numbers on
-  set wrap                        " Turn on text wrapping
   set lines=45                    " Nice height for 1920x1080
   set columns=140                 " Nice amount of width for 1920x1080
   set showmatch                   " Show matching brackets/parenthesis
@@ -213,7 +212,7 @@ endif
 
 " Formatting {
 
-  set nowrap                      " Do not wrap long lines
+  set wrap                        " Do not wrap long lines
   set autoindent                  " Indent at the same level of the previous line
   set shiftwidth=2                " Use indents of 4 spaces
   set expandtab                   " Tabs are spaces, not tabs
