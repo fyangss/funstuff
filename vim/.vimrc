@@ -155,7 +155,7 @@ endif
 " Vim UI{
 
   " Colorscheme {
-    color mustang
+    color lucius
   " }
 
   set tabpagemax=15               " Only show 15 tabs
