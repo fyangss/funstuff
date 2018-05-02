@@ -155,7 +155,9 @@ endif
 " Vim UI{
 
   " Colorscheme {
-    color lucius
+    set termguicolors     " enable true colors support
+    let ayucolor="light"  " for light version of theme
+    colorscheme ayu
   " }
 
   set tabpagemax=15               " Only show 15 tabs
