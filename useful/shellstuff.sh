@@ -35,3 +35,6 @@ git log --graph --format='format:%C(yellow)%h%C(reset) %C(blue)"%an" <%ae>%C(res
 
 #git in multiple git dirs
 find . -type d -depth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} pull --rebase \;
+
+#new branch alias
+alias upstream='function _upstream() { git checkout -b $1 && git branch --set-upstream-to=$2 }; _upstream'
