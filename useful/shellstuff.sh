@@ -32,3 +32,6 @@ wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-
 git log --graph --decorate --all --pretty=short
 #two line
 git log --graph --format='format:%C(yellow)%h%C(reset) %C(blue)"%an" <%ae>%C(reset) %C(magenta)%cr%C(reset)%C(auto)%d%C(reset)%n%s' --date-order
+
+#git in multiple git dirs
+find . -type d -depth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} pull --rebase \;
