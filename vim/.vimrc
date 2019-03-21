@@ -1,7 +1,7 @@
 " Introduction {
 " vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
 "
-" Vimrc settings I stole from elsewhere, usually from other people's githubs. If something in this is broken, it's probably mostly  their fault and maybe a tiny bit my fault.
+" Vimrc settings I stole from elsewhere, usually from other people's githubs. If something in this is broken, it's probably mostly their fault and maybe a tiny bit my fault and definitely not the other way around.
 "
 " }
 
