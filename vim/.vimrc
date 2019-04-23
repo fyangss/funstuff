@@ -215,6 +215,7 @@ endif
 " Formatting {
 
   set wrap                        " Do not wrap long lines
+  set textwidth=0 wrapmargin=0    " Do not auto newline
   set autoindent                  " Indent at the same level of the previous line
   set shiftwidth=2                " Use indents of 4 spaces
   set expandtab                   " Tabs are spaces, not tabs
