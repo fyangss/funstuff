@@ -1,0 +1,1 @@
+Select then :%y+ to put into clipboard
