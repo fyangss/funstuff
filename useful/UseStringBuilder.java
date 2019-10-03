@@ -4,7 +4,7 @@
 public class UseStringBuilder {
     private final static int NUM_LOOPS = 100000;
     public static void main(String[] args) {
-        // not a good way to 'benchmark' in general, good enough here
+        // don't benchmark like this, but gets the point across
         long startTime = System.currentTimeMillis();
         String str = "";
         for (int i = 0; i < NUM_LOOPS; ++i) {

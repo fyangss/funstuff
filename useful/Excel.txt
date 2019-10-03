@@ -1,2 +1,0 @@
-// Select all but the top few rows of a column and sum it (or do other things) starting from A3
-=SUM(OFFSET(A3, 0, 0, ROWS(A:A) - ROW(A3) + 1))
