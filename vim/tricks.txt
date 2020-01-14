@@ -1,2 +1,8 @@
-#copy to clipboard
+# copy to clipboard
 :%y+
+
+# match not given pattern
+v/pattern
+
+# match not given pattern and replace all of them (with nothing in this case)
+v/patter/s/.*//
