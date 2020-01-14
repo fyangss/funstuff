@@ -2,7 +2,7 @@
 :%y+
 
 # match not given pattern
-v/pattern
+:v/pattern
 
 # match not given pattern and replace all of them (with nothing in this case)
-v/patter/s/.*//
+:v/patter/s/.*//
