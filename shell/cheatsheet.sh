@@ -50,3 +50,6 @@ while read f; echo $f; done < ${file_path}
 
 # negative matching
 grep -v
+
+# grep, edit, and save
+ls | grep '^s' | sed 's/.*pattern: "\(abc\)".*/`sh \1 2>\&1 \&'/g' >> file
