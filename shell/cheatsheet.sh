@@ -43,7 +43,7 @@ alias upstream='function _upstream() { git checkout -b $1 && git branch --set-up
 for i in {1..10}; do echo $i; done
 
 # one liner while loop syntax
-let i=0; while [ $i -lt 5 ]; do echo $i; (( i++ )); done
+let i=0; while [ $i -lt 5 ]; do echo $(( i++ )); done
 
 # read file line by line
 while read f; echo $f; done < ${file_path}
