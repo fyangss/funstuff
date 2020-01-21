@@ -38,3 +38,12 @@ find . -type d -depth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} pull --r
 
 # new branch alias
 alias upstream='function _upstream() { git checkout -b $1 && git branch --set-upstream-to=$2 }; _upstream'
+
+# one liner for loop syntax
+for i in {1..10}; do echo $i; done
+
+# one liner while loop syntax
+let i=0; while [ $i -lt 5 ]; do echo $i; (( i++ )); done
+
+# read file line by line
+while read f; echo $f; done < ${file_path}
