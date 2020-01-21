@@ -47,3 +47,6 @@ let i=0; while [ $i -lt 5 ]; do echo $(( i++ )); done
 
 # read file line by line
 while read f; echo $f; done < ${file_path}
+
+# negative matching
+grep -v
