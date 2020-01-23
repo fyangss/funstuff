@@ -1,622 +1,268 @@
-" Introduction {
-" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
-"
-" Vimrc settings I stole from elsewhere, usually from other people's githubs. If something in this is broken, it's probably mostly  their fault and maybe a tiny bit my fault.
-"
-" }
-
-" Environment {
-
-  " Identify platform {
-    silent function! OSX()
-      return has('macunix')
-    endfunction
-    silent function! LINUX()
-      return has('unix') && !has('macunix') && !has('win32unix')
-    endfunction
-    silent function! WINDOWS()
-      return (has('win32') || has('win64'))
-    endfunction
-  " }
-
-  " Pre-reqs {
-    set nocompatible          " Must be first line
-    if !WINDOWS()
-        set shell=/bin/sh
-    endif
-  " }
-
-  " Windows Compatible {
-  " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
-  " across (heterogeneous) systems easier.
-    if WINDOWS()
-        set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
-    endif
-  " }
-
-  " Arrow Key Fix {
-  " https://github.com/fy/fy-vim/issues/780
-    if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
-        inoremap <silent> <C-[>OC <RIGHT>
-    endif
-  " }
-
-" }
-
-" Other configs {
-
-"Use before config if available {
-if filereadable(expand("~/.vimrc.before"))
-    source ~/.vimrc.before
+" Initialisation:"{{{
+" ----------------------------------------------------------------------------
+hi clear
+if exists("syntax_on")
+  syntax reset
 endif
-" }
 
-" Use bundles config {
-if filereadable(expand("~/.vimrc.bundles"))
-    source ~/.vimrc.bundles
-endif
-" }
-" }
+let s:style = get(g:, 'ayucolor', 'dark')
+let g:colors_name = "ayu"
+"}}}
 
-" General {
-  set background=light           " background triggering logic based off light background
+" Palettes:"{{{
+" ----------------------------------------------------------------------------
 
-  " background triggering
-  function! ToggleBG()
-    let s:tbg = &background
-    " Inversion
-    if s:tbh == "light"
-        set background=light
-    else
-        set background=dark
-    endif
-  endfunction
+let s:palette = {}
 
-  noremap <leader>bg :call ToggleBG()<CR>
+let s:palette.bg        = {'dark': "#0F1419",  'light': "#FAFAFA",  'mirage': "#212733"}
 
-  " if !has('gui')
-  "   set term=$TERM          " Make arrow and other keys work
-  " endif
-  filetype plugin indent on   " Automatically detect file types.
-  syntax on                   " Syntax highlighting
-  set mouse=a                 " Automatically enable mouse usage
-  set mousehide               " Hide the mouse cursor while typing
-  scriptencoding utf-8
+let s:palette.comment   = {'dark': "#5C6773",  'light': "#ABB0B6",  'mirage': "#5C6773"}
+let s:palette.markup    = {'dark': "#F07178",  'light': "#F07178",  'mirage': "#F07178"}
+let s:palette.constant  = {'dark': "#FFEE99",  'light': "#A37ACC",  'mirage': "#D4BFFF"}
+let s:palette.operator  = {'dark': "#E7C547",  'light': "#E7C547",  'mirage': "#80D4FF"}
+let s:palette.tag       = {'dark': "#36A3D9",  'light': "#36A3D9",  'mirage': "#5CCFE6"}
+let s:palette.regexp    = {'dark': "#95E6CB",  'light': "#4CBF99",  'mirage': "#95E6CB"}
+let s:palette.string    = {'dark': "#B8CC52",  'light': "#86B300",  'mirage': "#BBE67E"}
+let s:palette.function  = {'dark': "#FFB454",  'light': "#F29718",  'mirage': "#FFD57F"}
+let s:palette.special   = {'dark': "#E6B673",  'light': "#E6B673",  'mirage': "#FFC44C"}
+let s:palette.keyword   = {'dark': "#FF7733",  'light': "#FF7733",  'mirage': "#FFAE57"}
 
-  if has('clipboard')
-    if has('unnamedplus')
-      set clipboard=unnamed,unnamedplus
-    else
-      set clipboard=unnamed
-    endif
-  endif
+let s:palette.error     = {'dark': "#FF3333",  'light': "#FF3333",  'mirage': "#FF3333"}
+let s:palette.accent    = {'dark': "#F29718",  'light': "#FF6A00",  'mirage': "#FFCC66"}
+let s:palette.panel     = {'dark': "#14191F",  'light': "#FFFFFF",  'mirage': "#272D38"}
+let s:palette.guide     = {'dark': "#2D3640",  'light': "#D9D8D7",  'mirage': "#3D4751"}
+let s:palette.line      = {'dark': "#151A1E",  'light': "#F3F3F3",  'mirage': "#242B38"}
+let s:palette.selection = {'dark': "#253340",  'light': "#F0EEE4",  'mirage': "#343F4C"}
+let s:palette.fg        = {'dark': "#E6E1CF",  'light': "#5C6773",  'mirage': "#D9D7CE"}
+let s:palette.fg_idle   = {'dark': "#3E4B59",  'light': "#828C99",  'mirage': "#607080"}
 
-  " Most prefer to automatically switch to the current file directory when
-  " a new buffer is opened; to prevent this behavior, add the
-  " following to let g:fy_no_autochdir = 1
-  if !exists('g:fy_no_autochdir')
-    autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
-    " Always switch to the current file directory
-  endif
+"}}}
 
-  "set autowrite                       " Automatically write a file when leaving a modified buffer
-  set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
-  set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
-  set virtualedit=onemore             " Allow for cursor beyond last character
-  set history=1000                    " Store a ton of history (default is 20)
-  set spell                           " Spell checking on
-  set hidden                          " Allow buffer switching without saving
-  set iskeyword-=.                    " '.' is an end of word designator
-  set iskeyword-=#                    " '#' is an end of word designator
-  set iskeyword-=-                    " '-' is an end of word designator
+" Highlighting Primitives:"{{{
+" ----------------------------------------------------------------------------
 
-  " Instead of reverting the cursor to the last position in the buffer, we
-  " set it to the first line when editing a git commit message
-  au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+function! s:build_prim(hi_elem, field)
+  let l:vname = "s:" . a:hi_elem . "_" . a:field " s:bg_gray
+  let l:gui_assign = "gui".a:hi_elem."=".s:palette[a:field][s:style] " guibg=...
+  exe "let " . l:vname . " = ' " . l:gui_assign . "'"
+endfunction
 
-  " http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
-  " Restore cursor to file position in previous editing session
-  " To disable this, add the following to your .vimrc.before.local
-  " file: let g:fy_no_restore_cursor = 1
-  if !exists('g:fy_no_restore_cursor')
-    function! ResCur()
-      if line("'\"") <= line("$")
-        silent! normal! g`"
-        return 1
-      endif
-    endfunction
+let s:bg_none = ' guibg=NONE ctermbg=NONE'
+let s:fg_none = ' guifg=NONE ctermfg=NONE'
+for [key_name, d_value] in items(s:palette)
+  call s:build_prim('bg', key_name)
+  call s:build_prim('fg', key_name)
+endfor
+" }}}
 
-    augroup resCur
-      autocmd!
-      autocmd BufWinEnter * call ResCur()
-    augroup END
-  endif
+" Formatting Options:"{{{
+" ----------------------------------------------------------------------------
+let s:none   = "NONE"
+let s:t_none = "NONE"
+let s:n      = "NONE"
+let s:c      = ",undercurl"
+let s:r      = ",reverse"
+let s:s      = ",standout"
+let s:b      = ",bold"
+let s:u      = ",underline"
+let s:i      = ",italic"
 
-  " Setting up the directories {
-    set backup                  " Backups are nice ...
-    if has('persistent_undo')
-      set undofile                " So is persistent undo ...
-      set undolevels=1000         " Maximum number of changes that can be undone
-      set undoreload=10000        " Maximum number lines to save for undo on a buffer reload
-    endif
+exe "let s:fmt_none = ' gui=NONE".          " cterm=NONE".          " term=NONE"        ."'"
+exe "let s:fmt_bold = ' gui=NONE".s:b.      " cterm=NONE".s:b.      " term=NONE".s:b    ."'"
+exe "let s:fmt_bldi = ' gui=NONE".s:b.      " cterm=NONE".s:b.      " term=NONE".s:b    ."'"
+exe "let s:fmt_undr = ' gui=NONE".s:u.      " cterm=NONE".s:u.      " term=NONE".s:u    ."'"
+exe "let s:fmt_undb = ' gui=NONE".s:u.s:b.  " cterm=NONE".s:u.s:b.  " term=NONE".s:u.s:b."'"
+exe "let s:fmt_undi = ' gui=NONE".s:u.      " cterm=NONE".s:u.      " term=NONE".s:u    ."'"
+exe "let s:fmt_curl = ' gui=NONE".s:c.      " cterm=NONE".s:c.      " term=NONE".s:c    ."'"
+exe "let s:fmt_ital = ' gui=NONE".s:i.      " cterm=NONE".s:i.      " term=NONE".s:i    ."'"
+exe "let s:fmt_stnd = ' gui=NONE".s:s.      " cterm=NONE".s:s.      " term=NONE".s:s    ."'"
+exe "let s:fmt_revr = ' gui=NONE".s:r.      " cterm=NONE".s:r.      " term=NONE".s:r    ."'"
+exe "let s:fmt_revb = ' gui=NONE".s:r.s:b.  " cterm=NONE".s:r.s:b.  " term=NONE".s:r.s:b."'"
+"}}}
 
-    " To disable views add the following to your .vimrc.before.local file:
-    " let g:fy_no_views = 1
-    if !exists('g:fy_no_views')
-      " Add exclusions to mkview and loadview
-      " eg: *.*, svn-commit.tmp
-      let g:skipview_files = [
-            \ '\[example pattern\]'
-            \ ]
-    endif
-    " }
-" }
 
-" Vim UI{
+" Vim Highlighting: (see :help highlight-groups)"{{{
+" ----------------------------------------------------------------------------
+exe "hi! Normal"        .s:fg_fg          .s:bg_bg          .s:fmt_none
+exe "hi! ColorColumn"   .s:fg_none        .s:bg_line        .s:fmt_none
+" Conceal, Cursor, CursorIM
+exe "hi! CursorColumn"  .s:fg_none        .s:bg_line        .s:fmt_none
+exe "hi! CursorLine"    .s:fg_none        .s:bg_line        .s:fmt_none
+exe "hi! CursorLineNr"  .s:fg_accent      .s:bg_line        .s:fmt_none
+exe "hi! LineNr"        .s:fg_guide       .s:bg_none        .s:fmt_none
 
-  " Colorscheme {
-    set termguicolors     " enable true colors support
-    let ayucolor="light"  " for light version of theme
-    colorscheme ayu
-  " }
+exe "hi! Directory"     .s:fg_fg_idle     .s:bg_none        .s:fmt_none
+exe "hi! DiffAdd"       .s:fg_string      .s:bg_panel       .s:fmt_none
+exe "hi! DiffChange"    .s:fg_tag         .s:bg_panel       .s:fmt_none
+exe "hi! DiffText"      .s:fg_fg          .s:bg_panel       .s:fmt_none
+exe "hi! ErrorMsg"      .s:fg_fg          .s:bg_error       .s:fmt_stnd
+exe "hi! VertSplit"     .s:fg_bg          .s:bg_none        .s:fmt_none
+exe "hi! Folded"        .s:fg_fg_idle     .s:bg_panel       .s:fmt_none
+exe "hi! FoldColumn"    .s:fg_none        .s:bg_panel       .s:fmt_none
+exe "hi! SignColumn"    .s:fg_none        .s:bg_panel       .s:fmt_none
+"   Incsearch"
 
-  set tabpagemax=15               " Only show 15 tabs
-  set showmode                    " Display the current mode
+exe "hi! MatchParen"    .s:fg_fg          .s:bg_bg          .s:fmt_undr
+exe "hi! ModeMsg"       .s:fg_string      .s:bg_none        .s:fmt_none
+exe "hi! MoreMsg"       .s:fg_string      .s:bg_none        .s:fmt_none
+exe "hi! NonText"       .s:fg_guide       .s:bg_none        .s:fmt_none
+exe "hi! Pmenu"         .s:fg_fg          .s:bg_selection   .s:fmt_none
+exe "hi! PmenuSel"      .s:fg_fg          .s:bg_selection   .s:fmt_revr
+"   PmenuSbar"
+"   PmenuThumb"
+exe "hi! Question"      .s:fg_string      .s:bg_none        .s:fmt_none
+exe "hi! Search"        .s:fg_bg          .s:bg_constant    .s:fmt_none
+exe "hi! SpecialKey"    .s:fg_selection   .s:bg_none        .s:fmt_none
+exe "hi! SpellCap"      .s:fg_tag         .s:bg_none        .s:fmt_undr
+exe "hi! SpellLocal"    .s:fg_keyword     .s:bg_none        .s:fmt_undr
+exe "hi! SpellBad"      .s:fg_error       .s:bg_none        .s:fmt_undr
+exe "hi! SpellRare"     .s:fg_regexp      .s:bg_none        .s:fmt_undr
+exe "hi! StatusLine"    .s:fg_fg          .s:bg_panel       .s:fmt_none
+exe "hi! StatusLineNC"  .s:fg_fg_idle     .s:bg_panel       .s:fmt_none
+exe "hi! WildMenu"      .s:fg_bg          .s:bg_markup      .s:fmt_none
+exe "hi! TabLine"       .s:fg_fg          .s:bg_panel       .s:fmt_revr
+"   TabLineFill"
+"   TabLineSel"
+exe "hi! Title"         .s:fg_keyword     .s:bg_none        .s:fmt_none
+exe "hi! Visual"        .s:fg_none        .s:bg_selection   .s:fmt_none
+"   VisualNos"
+exe "hi! WarningMsg"    .s:fg_error       .s:bg_none        .s:fmt_none
 
-  set cursorline                  " Highlight current line
+" TODO LongLineWarning to use variables instead of hardcoding
+hi LongLineWarning  guifg=NONE        guibg=#371F1C     gui=underline ctermfg=NONE        ctermbg=NONE        cterm=underline
+"   WildMenu"
 
-  highlight clear SignColumn      " SignColumn should match background
-  highlight clear LineNr          " Current line number row will have same background color in relative mode
-  "highlight clear CursorLineNr    " Remove highlight color from current line number
+"}}}
 
-  if has('cmdline_info')
-    set ruler                   " Show the ruler
-    set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
-    set showcmd                 " Show partial commands in status line and
-    " Selected characters/lines in visual mode
-  endif
+" Generic Syntax Highlighting: (see :help group-name)"{{{
+" ----------------------------------------------------------------------------
+exe "hi! Comment"         .s:fg_comment   .s:bg_none        .s:fmt_none
 
-"  if has('statusline')
-"    set laststatus=2
+exe "hi! Constant"        .s:fg_constant  .s:bg_none        .s:fmt_none
+exe "hi! String"          .s:fg_string    .s:bg_none        .s:fmt_none
+"   Character"
+"   Number"
+"   Boolean"
+"   Float"
+
+exe "hi! Identifier"      .s:fg_tag       .s:bg_none        .s:fmt_none
+exe "hi! Function"        .s:fg_function  .s:bg_none        .s:fmt_none
+
+exe "hi! Statement"       .s:fg_keyword   .s:bg_none        .s:fmt_none
+"   Conditional"
+"   Repeat"
+"   Label"
+exe "hi! Operator"        .s:fg_operator  .s:bg_none        .s:fmt_none
+"   Keyword"
+"   Exception"
+
+exe "hi! PreProc"         .s:fg_special   .s:bg_none        .s:fmt_none
+"   Include"
+"   Define"
+"   Macro"
+"   PreCondit"
+
+exe "hi! Type"            .s:fg_tag       .s:bg_none        .s:fmt_none
+"   StorageClass"
+exe "hi! Structure"       .s:fg_special   .s:bg_none        .s:fmt_none
+"   Typedef"
+
+exe "hi! Special"         .s:fg_special   .s:bg_none        .s:fmt_none
+"   SpecialChar"
+"   Tag"
+"   Delimiter"
+"   SpecialComment"
+"   Debug"
 "
-"    " Broken down into easily includeable segments
-"    set statusline=%<%f\                     " Filename
-"    set statusline+=%w%h%m%r                 " Options
-"    if !exists('g:override_fy_bundles')
-"      set statusline+=%{fugitive#statusline()} " Git Hotness
-"    endif
-"    set statusline+=\ [%{&ff}/%Y]            " Filetype
-"    set statusline+=\ [%{getcwd()}]          " Current dir
-"    set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
-"  endif
+exe "hi! Underlined"      .s:fg_tag       .s:bg_none        .s:fmt_undr
 
-  set backspace=indent,eol,start  " Backspace for dummies
-  set linespace=0                 " No extra spaces between rows
-  set number                      " Line numbers on
-  set lines=45                    " Nice height for 1920x1080
-  set columns=140                 " Nice amount of width for 1920x1080
-  set showmatch                   " Show matching brackets/parenthesis
-  set incsearch                   " Find as you type search
-  set hlsearch                    " Highlight search terms
-  set winminheight=0              " Windows can be 0 line high
-  set ignorecase                  " Case insensitive search
-  set smartcase                   " Case sensitive when uc present
-  set wildmenu                    " Show list instead of just completing
-  set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
-  set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
-  set scrolljump=5                " Lines to scroll when cursor leaves screen
-  set scrolloff=3                 " Minimum lines to keep above and below cursor
-  set foldenable                  " Auto fold code
-  set list
-  set listchars=tab:â€º\ ,trail:â€¢,extends:#,nbsp:. " Highlight problematic whitespace
+exe "hi! Ignore"          .s:fg_none      .s:bg_none        .s:fmt_none
 
-" }
+exe "hi! Error"           .s:fg_fg        .s:bg_error       .s:fmt_none
 
-" Formatting {
+exe "hi! Todo"            .s:fg_markup    .s:bg_none        .s:fmt_none
 
-  set wrap                        " Do not wrap long lines
-  set autoindent                  " Indent at the same level of the previous line
-  set shiftwidth=2                " Use indents of 4 spaces
-  set expandtab                   " Tabs are spaces, not tabs
-  set tabstop=2                   " An indentation every four columns
-  set softtabstop=2               " Let backspace delete indent
-  set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
-  set splitright                  " Puts new vsplit windows to the right of the current
-  set splitbelow                  " Puts new split windows to the bottom of the current
-  "set matchpairs+=<:>             " Match, to be used with %
-  set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
-  "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
+" Quickfix window highlighting
+exe "hi! qfLineNr"        .s:fg_keyword   .s:bg_none        .s:fmt_none
+"   qfFileName"
+"   qfLineNr"
+"   qfError"
 
-  " Remove trailing whitespaces and ^M chars
-  " To disable the stripping of whitespace, add the following to your .vimrc.before.local file:
-  " let g:fy_keep_trailing_whitespace = 1
-  autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:fy_keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
-  "autocmd FileType go autocmd BufWritePre <buffer> Fmt
-  autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
-  autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
-  " preceding line best in a plugin but here for now.
-
-  autocmd BufNewFile,BufRead *.coffee set filetype=coffee
-
-  " Workaround vim-commentary for Haskell
-  autocmd FileType haskell setlocal commentstring=--\ %s
-  " Workaround broken colour highlighting in Haskell
-  autocmd FileType haskell,rust setlocal nospell
-
-" }
-
-" Key (re)Mappings {
-
-  " The default leader is '\', but many people prefer ',' as it's in a standard
-  " location. To override this behavior and set it back to '\' (or any other
-  " character) add the following to your .vimrc.before.local file:
-  " let g:fy_leader='\'
-  if !exists('g:fy_leader')
-    let mapleader = ','
-  else
-    let mapleader=g:fy_leader
-  endif
-  if !exists('g:fy_localleader')
-    let maplocalleader = '_'
-  else
-    let maplocalleader=g:fy_localleader
-  endif
-
-  " The default mappings for editing and applying the fy configuration
-  " are <leader>ev and <leader>sv respectively. Change them to your preference
-  " by adding the following to your .vimrc.before.local file:
-  "   let g:fy_edit_config_mapping='<leader>ec'
-  "   let g:fy_apply_config_mapping='<leader>sc'
-  if !exists('g:fy_edit_config_mapping')
-    let s:fy_edit_config_mapping = '<leader>ev'
-  else
-    let s:fy_edit_config_mapping = g:fy_edit_config_mapping
-  endif
-  if !exists('g:fy_apply_config_mapping')
-    let s:fy_apply_config_mapping = '<leader>sv'
-  else
-    let s:fy_apply_config_mapping = g:fy_apply_config_mapping
-  endif
-
-  " Easier moving in tabs and windows
-  " The lines conflict with the default digraph mapping of <C-K>
-  " If you prefer that functionality, add the following to your
-  " .vimrc.before.local file:
-  "   let g:fy_no_easyWindows = 1
-  if !exists('g:fy_no_easyWindows')
-    map <C-J> <C-W>j<C-W>_
-    map <C-K> <C-W>k<C-W>_
-    map <C-L> <C-W>l<C-W>_
-    map <C-H> <C-W>h<C-W>_
-  endif
-
-  " Wrapped lines goes down/up to next row, rather than next line in file.
-  noremap j gj
-  noremap k gk
-
-  " End/Start of line motion keys act relative to row/wrap width in the
-  " presence of `:set wrap`, and relative to line for `:set nowrap`.
-  " Default vim behaviour is to act relative to text line in both cases
-  " If you prefer the default behaviour, add the following to your
-  " .vimrc.before.local file:
-  "   let g:fy_no_wrapRelMotion = 1
-  if !exists('g:fy_no_wrapRelMotion')
-    " Same for 0, home, end, etc
-    function! WrapRelativeMotion(key, ...)
-      let vis_sel=""
-      if a:0
-        let vis_sel="gv"
-      endif
-      if &wrap
-        execute "normal!" vis_sel . "g" . a:key
-      else
-        execute "normal!" vis_sel . a:key
-      endif
-    endfunction
-
-    " Map g* keys in Normal, Operator-pending, and Visual+select
-    noremap $ :call WrapRelativeMotion("$")<CR>
-    noremap <End> :call WrapRelativeMotion("$")<CR>
-    noremap 0 :call WrapRelativeMotion("0")<CR>
-    noremap <Home> :call WrapRelativeMotion("0")<CR>
-    noremap ^ :call WrapRelativeMotion("^")<CR>
-    " Overwrite the operator pending $/<End> mappings from above
-    " to force inclusive motion with :execute normal!
-    onoremap $ v:call WrapRelativeMotion("$")<CR>
-    onoremap <End> v:call WrapRelativeMotion("$")<CR>
-    " Overwrite the Visual+select mode mappings from above
-    " to ensure the correct vis_sel flag is passed to function
-    vnoremap $ :<C-U>call WrapRelativeMotion("$", 1)<CR>
-    vnoremap <End> :<C-U>call WrapRelativeMotion("$", 1)<CR>
-    vnoremap 0 :<C-U>call WrapRelativeMotion("0", 1)<CR>
-    vnoremap <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
-    vnoremap ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
-  endif
-
-  " The following two lines conflict with moving to top and
-  " bottom of the screen
-  " If you prefer that functionality, add the following to your
-  " .vimrc.before.local file:
-  "   let g:fy_no_fastTabs = 1
-  if !exists('g:fy_no_fastTabs')
-    map <S-H> gT
-    map <S-L> gt
-  endif
-
-  " Stupid shift key fixes
-  if !exists('g:fy_no_keyfixes')
-    if has("user_commands")
-      command! -bang -nargs=* -complete=file E e<bang> <args>
-      command! -bang -nargs=* -complete=file W w<bang> <args>
-      command! -bang -nargs=* -complete=file Wq wq<bang> <args>
-      command! -bang -nargs=* -complete=file WQ wq<bang> <args>
-      command! -bang Wa wa<bang>
-      command! -bang WA wa<bang>
-      command! -bang Q q<bang>
-      command! -bang QA qa<bang>
-      command! -bang Qa qa<bang>
-    endif
-
-    cmap Tabe tabe
-  endif
-
-  " Yank from the cursor to the end of the line, to be consistent with C and D.
-  nnoremap Y y$
-
-  " Code folding options
-  nmap <leader>f0 :set foldlevel=0<CR>
-  nmap <leader>f1 :set foldlevel=1<CR>
-  nmap <leader>f2 :set foldlevel=2<CR>
-  nmap <leader>f3 :set foldlevel=3<CR>
-  nmap <leader>f4 :set foldlevel=4<CR>
-  nmap <leader>f5 :set foldlevel=5<CR>
-  nmap <leader>f6 :set foldlevel=6<CR>
-  nmap <leader>f7 :set foldlevel=7<CR>
-  nmap <leader>f8 :set foldlevel=8<CR>
-  nmap <leader>f9 :set foldlevel=9<CR>
-
-  " Most prefer to toggle search highlighting rather than clear the current
-  " search results. To clear search highlighting rather than toggle it on
-  " and off, add the following to your .vimrc.before.local file:
-  "   let g:fy_clear_search_highlight = 1
-  if exists('g:fy_clear_search_highlight')
-    nmap <silent> <leader>/ :nohlsearch<CR>
-  else
-    nmap <silent> <leader>/ :set invhlsearch<CR>
-  endif
+exe "hi! Conceal"         .s:fg_guide     .s:bg_none        .s:fmt_none
+exe "hi! CursorLineConceal" .s:fg_guide   .s:bg_line        .s:fmt_none
 
 
-  " Find merge conflict markers
-  map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
+" Terminal in NVIM
+" ---------
+if has("nvim")
+  let g:terminal_color_0 =  s:palette.bg[s:style]
+  let g:terminal_color_1 =  s:palette.markup[s:style]
+  let g:terminal_color_2 =  s:palette.string[s:style]
+  let g:terminal_color_3 =  s:palette.accent[s:style]
+  let g:terminal_color_4 =  s:palette.tag[s:style]
+  let g:terminal_color_5 =  s:palette.constant[s:style]
+  let g:terminal_color_6 =  s:palette.regexp[s:style]
+  let g:terminal_color_7 =  "#FFFFFF"
+  let g:terminal_color_8 =  s:palette.fg_idle[s:style]
+  let g:terminal_color_9 =  s:palette.error[s:style]
+  let g:terminal_color_10 = s:palette.string[s:style]
+  let g:terminal_color_11 = s:palette.accent[s:style]
+  let g:terminal_color_12 = s:palette.tag[s:style]
+  let g:terminal_color_13 = s:palette.constant[s:style]
+  let g:terminal_color_14 = s:palette.regexp[s:style]
+  let g:terminal_color_15 = s:palette.comment[s:style]
+  let g:terminal_color_background = g:terminal_color_0
+  let g:terminal_color_foreground = s:palette.fg[s:style]
+endif
 
-  " Shortcuts
-  " Change Working Directory to that of the current file
-  cmap cwd lcd %:p:h
-  cmap cd. lcd %:p:h
 
-  " Visual shifting (does not exit Visual mode)
-  vnoremap < <gv
-  vnoremap > >gv
+" NerdTree
+" ---------
+exe "hi! NERDTreeOpenable"          .s:fg_fg_idle     .s:bg_none        .s:fmt_none
+exe "hi! NERDTreeClosable"          .s:fg_accent      .s:bg_none        .s:fmt_none
+" exe "hi! NERDTreeBookmarksHeader"   .s:fg_pink        .s:bg_none        .s:fmt_none
+" exe "hi! NERDTreeBookmarksLeader"   .s:fg_bg          .s:bg_none        .s:fmt_none
+" exe "hi! NERDTreeBookmarkName"      .s:fg_keyword     .s:bg_none        .s:fmt_none
+" exe "hi! NERDTreeCWD"               .s:fg_pink        .s:bg_none        .s:fmt_none
+exe "hi! NERDTreeUp"                .s:fg_fg_idle    .s:bg_none        .s:fmt_none
+exe "hi! NERDTreeDir"               .s:fg_fg_idle    .s:bg_none        .s:fmt_none
+exe "hi! NERDTreeFile"              .s:fg_fg_idle    .s:bg_none        .s:fmt_none
+exe "hi! NERDTreeDirSlash"          .s:fg_guide      .s:bg_none        .s:fmt_none
 
-  " Allow using the repeat operator with a visual selection (!)
-  " http://stackoverflow.com/a/8064607/127816
-  vnoremap . :normal .<CR>
 
-  " For when you forget to sudo.. Really Write the file.
-  cmap w!! w !sudo tee % >/dev/null
+" GitGutter
+" ---------
+exe "hi! GitGutterAdd"          .s:fg_string     .s:bg_none        .s:fmt_none
+exe "hi! GitGutterChange"       .s:fg_tag        .s:bg_none        .s:fmt_none
+exe "hi! GitGutterDelete"       .s:fg_markup     .s:bg_none        .s:fmt_none
+exe "hi! GitGutterChangeDelete" .s:fg_function   .s:bg_none        .s:fmt_none
 
-  " Some helpers to edit mode
-  " http://vimcasts.org/e/14
-  cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
-  map <leader>ew :e %%
-  map <leader>es :sp %%
-  map <leader>ev :vsp %%
-  map <leader>et :tabe %%
+"}}}
 
-  " Adjust viewports to the same size
-  map <Leader>= <C-w>=
+" Diff Syntax Highlighting:"{{{
+" ----------------------------------------------------------------------------
+" Diff
+"   diffOldFile
+"   diffNewFile
+"   diffFile
+"   diffOnly
+"   diffIdentical
+"   diffDiffer
+"   diffBDiffer
+"   diffIsA
+"   diffNoEOL
+"   diffCommon
+hi! link diffRemoved Constant
+"   diffChanged
+hi! link diffAdded String
+"   diffLine
+"   diffSubname
+"   diffComment
 
-  " Map <Leader>ff to display all lines with keyword under cursor
-  " and ask which one to jump to
-  nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+"}}}
+"
+" This is needed for some reason: {{{
 
-  " Easier horizontal scrolling
-  map zl zL
-  map zh zH
+let &background = s:style
 
-  " Easier formatting
-  nnoremap <silent> <leader>q gwip
-
-  " FIXME: Revert this f70be548
-  " fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
-  map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
-
-" }
-
-" GUI Settings {
-
-  " GVIM- (here instead of .gvimrc)
-  if has('gui_running')
-    set guioptions-=T           " Remove the toolbar
-    set lines=40                " 40 lines of text instead of 24
-    if !exists("g:fy_no_big_font")
-      if LINUX() && has("gui_running")
-        set guifont=Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
-      elseif OSX() && has("gui_running")
-        set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
-      elseif WINDOWS() && has("gui_running")
-        set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
-      endif
-    endif
-  else
-    if &term == 'xterm' || &term == 'screen'
-      set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
-    endif
-    "set term=builtin_ansi       " Make arrow and other keys work
-  endif
-
-" }
-
-" Functions {
-
-  " Initialize directories {
-    function! InitializeDirectories()
-      let parent = $HOME
-      let prefix = 'vim'
-      let dir_list = {
-            \ 'backup': 'backupdir',
-            \ 'views': 'viewdir',
-            \ 'swap': 'directory' }
-
-      if has('persistent_undo')
-        let dir_list['undo'] = 'undodir'
-      endif
-
-      " To specify a different directory in which to place the vimbackup,
-      " vimviews, vimundo, and vimswap files/directories, add the following to
-      " your .vimrc.before.local file:
-      "   let g:fy_consolidated_directory = <full path to desired directory>
-      "   eg: let g:fy_consolidated_directory = $HOME . '/.vim/'
-      if exists('g:fy_consolidated_directory')
-        let common_dir = g:fy_consolidated_directory . prefix
-      else
-        let common_dir = parent . '/.' . prefix
-      endif
-
-      for [dirname, settingname] in items(dir_list)
-        let directory = common_dir . dirname . '/'
-        if exists("*mkdir")
-          if !isdirectory(directory)
-            call mkdir(directory)
-          endif
-        endif
-        if !isdirectory(directory)
-          echo "Warning: Unable to create backup directory: " . directory
-          echo "Try: mkdir -p " . directory
-        else
-          let directory = substitute(directory, " ", "\\\\ ", "g")
-          exec "set " . settingname . "=" . directory
-        endif
-      endfor
-    endfunction
-    call InitializeDirectories()
-  " }
-
-  " Initialize NERDTree as needed {
-    function! NERDTreeInitAsNeeded()
-      redir => bufoutput
-      buffers!
-      redir END
-      let idx = stridx(bufoutput, "NERD_tree")
-      if idx > -1
-        NERDTreeMirror
-        NERDTreeFind
-        wincmd l
-      endif
-    endfunction
-  " }
-
-  " Strip whitespace {
-    function! StripTrailingWhitespace()
-      " Preparation: save last search, and cursor position.
-      let _s=@/
-      let l = line(".")
-      let c = col(".")
-      " do the business:
-      %s/\s\+$//e
-      " clean up: restore previous search history, and cursor position
-      let @/=_s
-      call cursor(l, c)
-    endfunction
-  " }
-
-  " Shell command {
-    function! s:RunShellCommand(cmdline)
-      botright new
-
-      setlocal buftype=nofile
-      setlocal bufhidden=delete
-      setlocal nobuflisted
-      setlocal noswapfile
-      setlocal nowrap
-      setlocal filetype=shell
-      setlocal syntax=shell
-
-      call setline(1, a:cmdline)
-      call setline(2, substitute(a:cmdline, '.', '=', 'g'))
-      execute 'silent $read !' . escape(a:cmdline, '%#')
-      setlocal nomodifiable
-      1
-    endfunction
-
-    command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
-    " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
-  " }
-
-function! s:IsfyFork()
-    let s:is_fork = 0
-    let s:fork_files = ["~/.vimrc.fork", "~/.vimrc.before.fork", "~/.vimrc.bundles.fork"]
-    for fork_file in s:fork_files
-      if filereadable(expand(fork_file, ":p"))
-        let s:is_fork = 1
-        break
-      endif
-    endfor
-    return s:is_fork
-  endfunction
-
-  function! s:ExpandFilenameAndExecute(command, file)
-    execute a:command . " " . expand(a:file, ":p")
-  endfunction
-
-  function! s:EditfyConfig()
-    call <SID>ExpandFilenameAndExecute("tabedit", "~/.vimrc")
-    call <SID>ExpandFilenameAndExecute("vsplit", "~/.vimrc.before")
-    call <SID>ExpandFilenameAndExecute("vsplit", "~/.vimrc.bundles")
-
-    execute bufwinnr(".vimrc") . "wincmd w"
-    call <SID>ExpandFilenameAndExecute("split", "~/.vimrc.local")
-    wincmd l
-    call <SID>ExpandFilenameAndExecute("split", "~/.vimrc.before.local")
-    wincmd l
-    call <SID>ExpandFilenameAndExecute("split", "~/.vimrc.bundles.local")
-
-    if <SID>IsfyFork()
-      execute bufwinnr(".vimrc") . "wincmd w"
-      call <SID>ExpandFilenameAndExecute("split", "~/.vimrc.fork")
-      wincmd l
-      call <SID>ExpandFilenameAndExecute("split", "~/.vimrc.before.fork")
-      wincmd l
-      call <SID>ExpandFilenameAndExecute("split", "~/.vimrc.bundles.fork")
-    endif
-
-    execute bufwinnr(".vimrc.local") . "wincmd w"
-  endfunction
-
-  execute "noremap " . s:fy_edit_config_mapping " :call <SID>EditfyConfig()<CR>"
-  execute "noremap " . s:fy_apply_config_mapping . " :source ~/.vimrc<CR>"
-" }
-
-" Other vim localized versions and cleanup {
-
-  " Use fork vimrc if available {
-    if filereadable(expand("~/.vimrc.fork"))
-      source ~/.vimrc.fork
-    endif
-  " }
-
-  " Use local vimrc if available {
-    if filereadable(expand("~/.vimrc.local"))
-      source ~/.vimrc.local
-    endif
-  " }
-
-  " Use local gvimrc if available and gui is running {
-    if has('gui_running')
-      if filereadable(expand("~/.gvimrc.local"))
-        source ~/.gvimrc.local
-      endif
-    endif
-  " }
-
-" }
+" }}}
