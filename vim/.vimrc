@@ -59,7 +59,7 @@ endif
 " }
 
 " General {
-  set background=dark           " background triggering logic based off light background
+  set background=light           " background triggering logic based off light background
 
   " background triggering
   function! ToggleBG()
@@ -99,12 +99,12 @@ endif
     " Always switch to the current file directory
   endif
 
-  "set autowrite                       " Automatically write a file when leaving a modified buffer
+  set autowrite                       " Automatically write a file when leaving a modified buffer
   set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
   set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
   set virtualedit=onemore             " Allow for cursor beyond last character
-  set history=1000                    " Store a ton of history (default is 20)
-  "set spell                           " Spell checking on
+  set history=100                     " Store a ton of history (default is 20)
+  set spell                           " Spell checking on
   set hidden                          " Allow buffer switching without saving
   set iskeyword-=.                    " '.' is an end of word designator
   set iskeyword-=#                    " '#' is an end of word designator
@@ -136,8 +136,8 @@ endif
     set backup                  " Backups are nice ...
     if has('persistent_undo')
       set undofile                " So is persistent undo ...
-      set undolevels=1000         " Maximum number of changes that can be undone
-      set undoreload=10000        " Maximum number lines to save for undo on a buffer reload
+      set undolevels=100          " Maximum number of changes that can be undone
+      set undoreload=1000         " Maximum number lines to save for undo on a buffer reload
     endif
 
     " To disable views add the following to your .vimrc.before.local file:
