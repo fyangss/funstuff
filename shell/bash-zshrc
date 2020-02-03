@@ -17,7 +17,6 @@ case $- in
     *) return;;
 esac
 
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -71,11 +70,6 @@ xterm*|rxvt*)
   ;;
 esac
 
-# enable color support of ls and also add handy aliases
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -96,50 +90,15 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Mornings
-alias p='prodcertstatus || prodaccess'
-
-# Blaze
-alias bb='blaze build'
-alias bba='blaze build :all'
-alias bbt='blaze test'
-alias bbta='blaze test :all'
-alias bbr='blaze run'
-
-# Edit this file
-alias ebrc='vim ~/.bashrc && . ~/.bashrc'
-
-# Client checking
-alias myclients='ls /google/src/cloud/fredyang'
-alias hgclients='hg citc --list'
-
-# Languages
-alias py3='python3'
-
-# Tools
-alias aristotle_cli=/google/data/ro/projects/aristotle/aristotle_cli.par
-alias borg_capacity_cli=/google/data/ro/projects/borg-sre/borg_capacity_cli
-alias srsly_cli=/google/data/ro/projects/borg-sre/srsly_cli
-alias dedicated_labels=/google/data/ro/projects/borg-sre/dedicated_labels.par
-alias ipdb_client=/google/data/ro/projects/netops/ipdb_client
-alias reachability='/google/bin/releases/cloudnet-modeling/reachability/reachability.par'
-alias machine_picker=/google/data/ro/teams/cloud-capacity-automation/machine_picker_v2/live/machine_picker.par
-alias siscli.par='/google/data/ro/buildstatic/projects/production/sisyphus/siscli.par'
-alias mkredirect='/google/src/head/depot/google3/corp/g3doc_contrib/tools/mkredirect/mkredirect.sh'
-
-# GCP
-alias gcp_proj_number='/google/data/ro/teams/oneplatform/namespace_client --project_ids'
-alias gcp_proj_name='/google/data/ro/teams/oneplatform/namespace_client --project_numbers'
-
 # Vim
 export EDITOR='vim'
 set -o vi
 
-PATH=$PATH:/google/data/ro/projects/bandaid/bassh
-PATH=$PATH:/google/data/ro/projects/traffic/traffic_cli
-PATH=$PATH:/google/data/ro/projects/internetto/etcpdump
-PATH=$PATH:/google/data/ro/projects/internetto/ipgoogle
-PATH=$PATH:/home/build/google3/production/tools/bsearch/bsearch
+#PATH=$PATH:/google/data/ro/projects/bandaid/bassh
+#PATH=$PATH:/google/data/ro/projects/traffic/traffic_cli
+#PATH=$PATH:/google/data/ro/projects/internetto/etcpdump
+#PATH=$PATH:/google/data/ro/projects/internetto/ipgoogle
+#PATH=$PATH:/home/build/google3/production/tools/bsearch/bsearch
 
 # Disable the bell
 if [[ $iatest > 0 ]]; then bind "set bell-style visible"; fi
@@ -176,60 +135,6 @@ export LESS_TERMCAP_se=$'\E[0m'
 export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
-
-# Alias's to modified commands
-alias cp='cp -i'
-alias mv='mv -i'
-alias rm='rm -iv'
-alias mkdir='mkdir -p'
-alias ps='ps auxf'
-alias less='less -R'
-alias apt-get='sudo apt-get'
-alias multitail='multitail --no-repeat -c'
-alias vi='vim'
-alias svi='sudo vi'
-
-# Remove a directory and all files
-alias rmd='rm -rfv '
-
-# Alias's for multiple directory listing commands
-alias la='ls -Alh' # show hidden files
-alias ls='ls -F --color=always' # add colors and file type extensions
-alias lx='ls -lXBh' # sort by extension
-alias lk='ls -lSrh' # sort by size
-alias lc='ls -lcrh' # sort by change time
-alias lu='ls -lurh' # sort by access time
-alias lr='ls -lRh' # recursive ls
-alias lt='ls -ltrh' # sort by date
-alias lm='ls -alh |more' # pipe through 'more'
-alias lw='ls -xAh' # wide listing format
-alias ll='ls -Fls' # long listing format
-alias labc='ls -lap' #alphabetical sort
-alias lf="ls -l | egrep -v '^d'" # files only
-alias ldir="ls -l | egrep '^d'" # directories only
-
-alias topcpu="/bin/ps -eo pcpu,pid,user,args | sort -k 1 -r | head -10"
-
-# Search files in the current folder
-alias f="find . | grep "
-# Search files in current folder minus search expression
-alias fv="find . | grep -v "
-
-# Alias's to show disk space and space used in a folder
-alias diskspace="du -S | sort -n -r |more"
-alias folders='du -h --max-depth=1'
-alias folderssort='find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
-alias tree='tree -CAhF --dirsfirst'
-alias treed='tree -CAFd'
-alias mountedinfo='df -hT'
-
-# Alias's for archives
-alias mktar='tar -cvf'
-alias mkbz2='tar -cvjf'
-alias mkgz='tar -cvzf'
-alias untar='tar -xvf'
-alias unbz2='tar -xvjf'
-alias ungz='tar -xvzf'
 
 # Searches for text in all files in the current folder
 ftext ()
@@ -333,7 +238,6 @@ netinfo ()
 }
 
 # IP address lookup
-alias whatismyip="whatsmyip"
 function whatsmyip ()
 {
   # Dumps a list of all IP addresses for every device
@@ -345,3 +249,5 @@ function whatsmyip ()
   # External IP Lookup
   echo -n "External IP: " ; wget http://smart-ip.net/myip -O - -q
 }
+
+alias whatsmyip='whatsmyip'
