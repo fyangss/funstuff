@@ -1,5 +1,5 @@
 " Introduction {
-" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+" vim: set foldmarker={,} foldlevel=0 foldmethod=marker spell:
 "
 " Vimrc settings I stole from elsewhere, usually from other people's githubs. If something in this is broken, it's probably mostly their fault and maybe a tiny bit my fault and definitely not the other way around.
 "
@@ -193,7 +193,7 @@ endif
   set backspace=indent,eol,start  " Backspace for dummies
   set linespace=0                 " No extra spaces between rows
   set number                      " Line numbers on
-  set lines=45                    " Nice height for 1920x1080
+  set lines=50                    " Nice height for 1920x1080
   set columns=140                 " Nice amount of width for 1920x1080
   set showmatch                   " Show matching brackets/parenthesis
   set incsearch                   " Find as you type search
@@ -217,10 +217,10 @@ endif
   set wrap                        " Do not wrap long lines
   set textwidth=0 wrapmargin=0    " Do not auto newline
   set autoindent                  " Indent at the same level of the previous line
-  set shiftwidth=2                " Use indents of 4 spaces
   set expandtab                   " Tabs are spaces, not tabs
   set tabstop=2                   " An indentation every four columns
   set softtabstop=2               " Let backspace delete indent
+  set shiftwidth=2                " Use indents of 2 spaces
   set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
   set splitright                  " Puts new vsplit windows to the right of the current
   set splitbelow                  " Puts new split windows to the bottom of the current
@@ -294,6 +294,9 @@ endif
   " Wrapped lines goes down/up to next row, rather than next line in file.
   noremap j gj
   noremap k gk
+
+  " Copying
+  map <C-Y> :%y+
 
   " End/Start of line motion keys act relative to row/wrap width in the
   " presence of `:set wrap`, and relative to line for `:set nowrap`.
@@ -516,6 +519,8 @@ endif
       endif
     endfunction
   " }
+  map <C-n> :NERDTreeToggle<CR>
+  " auto start nerdtree autocmd vimenter * NERDTree
 
   " Strip whitespace {
     function! StripTrailingWhitespace()
