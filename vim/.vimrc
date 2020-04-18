@@ -156,8 +156,7 @@ endif
 
   " Colorscheme {
     set termguicolors     " enable true colors support
-    let ayucolor="light"  " for light version of theme
-    colorscheme ayu
+    colorscheme darcula
   " }
 
   set tabpagemax=15               " Only show 15 tabs
