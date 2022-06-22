@@ -85,21 +85,11 @@ fi
 export EDITOR='vim'
 set -o vi
 
-# Uncomment when necessary
-#PATH=$PATH:/google/data/ro/projects/bandaid/bassh
-#PATH=$PATH:/google/data/ro/projects/traffic/traffic_cli
-#PATH=$PATH:/google/data/ro/projects/internetto/etcpdump
-#PATH=$PATH:/google/data/ro/projects/internetto/ipgoogle
-#PATH=$PATH:/home/build/google3/production/tools/bsearch/bsearch
-
 # Tool proxy
 export PROXY_USER="traffic-interconnect-tool-proxy"
 export PROXY_ROOT="traffic-interconnect-tool-proxy"
 export PRODSPEC="traffic-interconnect-tool-proxy-tool-proxy"
 export TOOL_PROXY_ADDRESS="/abns/traffic-interconnect-tool-proxy/prod-traffic-interconnect-tool-proxy-tool-proxy.annealed-tool-proxy"
-
-# pip stuffs
-PATH=$PATH:/usr/local/google/home/fredyang/.local/bin
 
 # Disable the bell
 if [[ $iatest > 0 ]]; then bind "set bell-style visible"; fi
