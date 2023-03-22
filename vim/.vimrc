@@ -54,7 +54,7 @@ return (has('win32') || has('win64'))
   " }
 
   " General {
-  set background=dark       " background triggering logic based off light background
+  set background=light       " background triggering logic based off light background
 
   if !has('gui')
     set term=$TERM      " Make arrow and other keys work
@@ -142,7 +142,7 @@ return (has('win32') || has('win64'))
 
   " Colorscheme {
   set termguicolors   " enable true colors support
-  colorscheme solarized
+  colorscheme lucius
   " }
 
   set tabpagemax=15         " Only show 15 tabs
