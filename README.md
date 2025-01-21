@@ -1,2 +1,2 @@
 # funstuff
-Things I've forgetten the google keywords for to find again in the future.
+Things I've forgotten the google keywords for to find again in the future.
